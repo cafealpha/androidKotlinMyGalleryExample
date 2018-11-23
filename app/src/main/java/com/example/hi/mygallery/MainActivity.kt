@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import org.jetbrains.anko.alert
@@ -50,6 +51,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getAllPhotos() {
+        var fragment = ArrayList<Fragment>()
+
         //모든 사진 정보 가져오기
         var cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             null,
@@ -62,9 +65,15 @@ class MainActivity : AppCompatActivity() {
                 //사진 경로 uri가져오기
                 val uri = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
                 Log.d("MainActivity", uri)
+                fragment.add(PhotoFragment.newInstance(uri))
             }
             cursor.close()
         }
+
+        //어댑터
+        val adapter = MyPagerAdapter(supportFragmentManager)
+        adapter.updateFragments(fragment)
+        viewPager.adapter = adapter
 
     }
 
